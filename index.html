@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntrepidMaths</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .calculator h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .calculator .form-group {
+            margin-bottom: 15px;
+        }
+
+        .calculator .form-group label {
+            font-weight: bold;
+        }
+
+        .calculator .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .calculator .form-group .btn {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .calculator .form-group .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .calculator .graphing-calculator .graph {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .card-img-container {
+            height: 250px; /* Adjust this */
+            overflow: hidden;
+        }
+
+        .card-img-container img {
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+        }
+
+        .social-icon {
+            width: 20px; /* Adjust this */
+            height: auto; /* Adjust this */
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (sit on top) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="https://intrepidbird.me">IntrepidBird</a>
+        <!-- Toggle button for small screens -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="https://intrepidbird.me/#main-content">About Me</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://intrepidbird.me/projects">Projects</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://intrepidbird.me/blog">Blog</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+<!-- Calculator Section -->
+<div class="container">
+    <div class="calculator">
+        <h2>Calculator</h2>
+        <form id="calculatorForm">
+            <div class="form-group">
+                <label for="expression">Expression:</label>
+                <input type="text" class="form-control" id="expression" placeholder="Enter expression" name="expression">
+            </div>
+            <div class="form-group">
+                <label for="theme">Theme:</label>
+                <select class="form-control" id="theme" name="theme">
+                    <option value="white">White</option>
+                    <option value="grey">Grey</option>
+                    <option value="blue">Blue</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Calculate</button>
+                <button type="button" class="btn btn-secondary" id="switchCalculator">Switch to Graphing Calculator</button>
+                <button type="button" class="btn btn-danger" id="clear">Clear</button>
+            </div>
+        </form>
+        <div class="graphing-calculator">
+            <form id="graphingCalculatorForm">
+                <div class="form-group">
+                    <label for="expression">Expression:</label>
+                    <input type="text" class="form-control" id="expression" placeholder="Enter expression" name="expression">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Graph</button>
+                    <button type="button" class="btn btn-secondary" id="switchCalculator">Switch to Calculator</button>
+                    <button type="button" class="btn btn-danger" id="clear">Clear</button>
+                </div>
+            </form>
+            <div class="graph"></div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <footer class="bg-light text-black text-center p-4">
+        &copy; 2024 IntrepidBird. All rights reserved.
+        <hr>
+        Connect with me:
+        <a href="https://github.com/intrepidbird" target="_blank"><img src="images/github-icon.png" alt="GitHub" class="social-icon"></a>
+        <a href="https://artofproblemsolving.com/community/user/632053" target="_blank"><img src="images/aops-icon.png" alt="AoPS" class="social-icon"></a>
+        <a href="https://twitter.com/intrepidbird97" target="_blank"><img src="images/twitter-icon.png" alt="Twitter" class="social-icon"></a>
+    </footer>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+$(document).ready(function() {
+    let chart;
+    
+    $('#calculatorForm').submit(function(e) {
+        e.preventDefault();
+        let equations = $('#equations').val().split(','); // Split equations by comma
+        let minX = parseFloat($('#minX').val());
+        let maxX = parseFloat($('#maxX').val());
+        let selectedGraphType = $('#graphType').val(); // Read the selected graph type from the dropdown
+
+        if (isNaN(minX) || isNaN(maxX) || minX >= maxX) {
+            alert('Invalid range. Please check your input.');
+            return;
+        }
+
+        let canvas = document.getElementById('graph').getContext('2d');
+        let xValues = [];
+        let datasets = [];
+
+        for (let equation of equations) {
+            equation = equation.trim(); // Remove leading/trailing spaces
+            let yValues = [];
+
+            try {
+                for (let x = minX; x <= maxX; x += 0.1) {
+                    xValues.push(x);
+                    // Replace "^" with "**" and append "Math." to mathematical expressions in the equation
+                    let equationForEval = equation;
+                    equationForEval = equationForEval.replace(/(sin|cos|tan|sqrt|log|exp|pi|e)(?=\()|pi|e/g, 'Math.$&');
+                    equationForEval = equationForEval.replace(/\^/g, '**');
+                    let result = eval(equationForEval);
+
+
+                    // Check if the result is a valid number, not NaN
+                    if (!isNaN(result)) {
+                        yValues.push(result);
+                    } else {
+                        // Handle the case where the equation is invalid
+                        throw new Error('Invalid Equation');
+                    }
+                }
+
+                datasets.push({
+                    label: equation,
+                    data: yValues,
+                    borderColor: getRandomColor(),
+                    borderWidth: 2,
+                });
+            } catch (error) {
+                // Handle the error and provide feedback to the user
+                console.error(error);
+                alert(`Invalid equation: "${equation}". Please check your input.`);
+                return;
+            }
+        }
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(canvas, {
+            type: selectedGraphType,
+            data: {
+                labels: xValues,
+                datasets: datasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'X'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Y'
+                        }
+                    }
+                }
+            }
+        });
+
+        $('.graphic-container').addClass('active');
+    });
+
+    $('#resetBtn').on('click', () => {
+        if (chart) chart.destroy();
+        $('.graphic-container').removeClass('active');
+    });
+});
+
+function getRandomColor() {
+    // Generates a random hexadecimal color
+    return '#' + Math.floor(Math.random()*16777215).toString(16);
+}
+
+
+
+
+document.body.style="background-color: var(--bs-dark);transition: 0.5s;"
+const sun = "https://www.uplooder.net/img/image/55/7aa9993fc291bc170abea048589896cf/sun.svg";
+const moon = "https://www.uplooder.net/img/image/2/addf703a24a12d030968858e0879b11e/moon.svg"
+
+var theme = "dark";
+  const root = document.querySelector(":root");
+  const container = document.getElementsByClassName("theme-container")[0];
+  const themeIcon = document.getElementById("theme-icon");
+  container.addEventListener("click", setTheme);
+  function setTheme() {
+    switch (theme) {
+      case "dark":
+        setLight();
+        theme = "light";
+        break;
+      case "light":
+        setDark();
+        theme = "dark";
+        break;
+    }
+  }
+  function setLight() {
+    root.style.setProperty(
+      "--bs-dark",
+      "linear-gradient(318.32deg, #c3d1e4 0%, #dde7f3 55%, #d4e0ed 100%)"
+    );
+    container.classList.remove("shadow-dark");
+    setTimeout(() => {
+      container.classList.add("shadow-light");
+      themeIcon.classList.remove("change");
+    }, 300);
+    themeIcon.classList.add("change");
+    themeIcon.src = sun;
+  }
+  function setDark() {
+    root.style.setProperty("--bs-dark", "#000");
+    container.classList.remove("shadow-light");
+    setTimeout(() => {
+      container.classList.add("shadow-dark");
+      themeIcon.classList.remove("change");
+    }, 300);
+    themeIcon.classList.add("change");
+    themeIcon.src = moon;
+  }
+</body>
+</html>
